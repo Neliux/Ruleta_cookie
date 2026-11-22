@@ -142,6 +142,8 @@
       box-shadow: 0 4px 0 #a34f39, 0 10px 24px #170c19b0;
     }
     #girar:disabled { cursor: default; opacity: .82; }
+    #estado-giro:empty { display: none; }
+    #estado-giro:not(:empty) { margin: 0; padding: .45rem .65rem; border-radius: 9px; background: #24132bee; color: #ffe0a2; font-weight: 700; }
     #sonido {
       position: fixed;
       z-index: 2;
@@ -277,6 +279,7 @@
       </div>
     </div>
     <button id="girar" type="button">GIRAR</button>
+    <p id="estado-giro" role="status"></p>
     <a class="menu-link" href="menu.html">Ver menú</a>
   </main>
   <dialog id="ventana" role="dialog" aria-modal="true" aria-labelledby="titulo-resultado" aria-describedby="resultado">
@@ -311,8 +314,9 @@
       ],
       7: ['Las Mini Oreo se hicieron las distraídas en la casilla de al lado.']
     };
-    const pesoPremio = 15;
-    const pesoSinPremio = 91;
+    const urlGiro = "https://eyvzpzwagdccphsktogu.supabase.co/rest/v1/rpc/mystery_sweet_girar";
+    const clavePublica = "sb_publishable_TuwjOiBnavNXWkxzGye_Jw_20vuNP8E";
+    const claveGiroPendiente = "mystery-sweet-giro-pendiente";
     const duracionGiro = 7000;
     const paleta = ['#ffcc74', '#ff83aa', '#76e5bf', '#d49cff', '#fff0be'];
     const elemento = id => document.getElementById(id);
@@ -321,7 +325,9 @@
     const ventana = elemento('ventana');
     const efectos = elemento('efectos');
     const reducirMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
+    const estadoGiro = elemento("estado-giro");
     let giroIniciado = false;
+    let idGiro;
 
     function indiceAlAzar(cantidad) {
       if (!window.crypto || typeof window.crypto.getRandomValues !== 'function') {
@@ -336,13 +342,39 @@
       return bytes[0] % cantidad;
     }
 
-    function elegirCasilla() {
-      const total = premios.reduce((suma, premio) => suma + (premio ? pesoPremio : pesoSinPremio), 0);
-      let turno = indiceAlAzar(total);
-      return premios.findIndex(premio => {
-        turno -= premio ? pesoPremio : pesoSinPremio;
-        return turno < 0;
-      });
+    function obtenerIdGiro() {
+      if (idGiro) return idGiro;
+      try {
+        idGiro = sessionStorage.getItem(claveGiroPendiente);
+      } catch (_) {}
+      if (!idGiro) {
+        idGiro = crypto.randomUUID();
+        try {
+          sessionStorage.setItem(claveGiroPendiente, idGiro);
+        } catch (_) {}
+      }
+      return idGiro;
+    }
+
+    async function pedirCasilla() {
+      const controlador = new AbortController();
+      const limite = setTimeout(() => controlador.abort(), 10000);
+      try {
+        const respuesta = await fetch(urlGiro, {
+          method: 'POST',
+          headers: { apikey: clavePublica, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ p_id: obtenerIdGiro() }),
+          signal: controlador.signal
+        });
+        if (!respuesta.ok) throw new Error('No se confirmó el giro');
+        const casilla = await respuesta.json();
+        if (!Number.isInteger(casilla) || casilla < 0 || casilla >= premios.length) {
+          throw new Error('Respuesta de giro inválida');
+        }
+        return casilla;
+      } finally {
+        clearTimeout(limite);
+      }
     }
 
     function animarResultado(gano) {
@@ -393,13 +425,24 @@
     });
     ventana.addEventListener('close', limpiarResultado);
 
-    girar.addEventListener('click', () => {
+    girar.addEventListener('click', async () => {
       if (giroIniciado) return;
       giroIniciado = true;
       girar.disabled = true;
       audioDelPuesto.iniciar();
 
-      const indice = elegirCasilla();
+      girar.textContent = 'CONECTANDO…';
+      estadoGiro.textContent = '';
+      let indice;
+      try {
+        indice = await pedirCasilla();
+      } catch (_) {
+        giroIniciado = false;
+        girar.disabled = false;
+        girar.textContent = 'REINTENTAR';
+        estadoGiro.textContent = 'No pudimos confirmar el giro. Revisá la conexión y volvé a intentar.';
+        return;
+      }
       const premio = premios[indice];
       const angulo = 360 * 9 - indice * (360 / premios.length);
       rueda.style.setProperty('--duracion-giro', duracionGiro + 'ms');
@@ -415,6 +458,9 @@
         const mensajes = mensajesSinPremio[indice];
         elemento('resultado').textContent = premio || mensajes[indiceAlAzar(mensajes.length)];
         girar.textContent = 'GIRO REALIZADO';
+        try {
+          sessionStorage.removeItem(claveGiroPendiente);
+        } catch (_) {}
         abrirResultado();
         animarResultado(Boolean(premio));
       }
