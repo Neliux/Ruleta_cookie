@@ -252,8 +252,18 @@
   </dialog>
   <button id="sonido" type="button" title="Silenciar música" aria-label="Música" aria-pressed="true">🔊</button>
   <audio id="musica" src="musica.mp3" loop preload="none"></audio>
+  <script src="musica.js"></script>
   <script>
     const premios = ['Ganaste minigalletas', null, 'Ganaste un Oreo gratis', null, 'Ganaste un mini trozo de tarta', null, null, null];
+    const mensajesSinPremio = {
+      1: 'Uyyy, entre las minigalletas y el Oreo. ¡Casi!',
+      3: 'El Oreo y la tarta te hicieron el pasillito. ¡Por poquito!',
+      5: 'La tarta quedó ahí nomás. ¡Hasta se sentía el olorcito!',
+      6: 'La ruleta se fue de paseo lejos de los premios. ¡Te mandó saludos!',
+      7: 'La minigalleta se escondió en la casilla de al lado. ¡Qué traviesa!'
+    };
+    const pesoPremio = 55;
+    const pesoSinPremio = 67;
     const duracionGiro = 7000;
     const paleta = ['#ffcc74', '#ff83aa', '#76e5bf', '#d49cff', '#fff0be'];
     const elemento = id => document.getElementById(id);
@@ -261,10 +271,7 @@
     const rueda = elemento('rueda');
     const ventana = elemento('ventana');
     const efectos = elemento('efectos');
-    const sonido = elemento('sonido');
-    const musica = elemento('musica');
     const reducirMovimiento = matchMedia('(prefers-reduced-motion: reduce)');
-    let sonidoActivo = true;
     let giroIniciado = false;
 
     function indiceAlAzar(cantidad) {
@@ -280,10 +287,13 @@
       return bytes[0] % cantidad;
     }
 
-    function iniciarMusica() {
-      if (!sonidoActivo) return;
-      const reproduccion = musica.play();
-      if (reproduccion) reproduccion.catch(() => {});
+    function elegirCasilla() {
+      const total = premios.reduce((suma, premio) => suma + (premio ? pesoPremio : pesoSinPremio), 0);
+      let turno = indiceAlAzar(total);
+      return premios.findIndex(premio => {
+        turno -= premio ? pesoPremio : pesoSinPremio;
+        return turno < 0;
+      });
     }
 
     function animarResultado(gano) {
@@ -306,15 +316,6 @@
       }
       efectos.append(particulas);
     }
-
-    sonido.addEventListener('click', () => {
-      sonidoActivo = !sonidoActivo;
-      sonido.textContent = sonidoActivo ? '🔊' : '🔇';
-      sonido.setAttribute('aria-pressed', String(sonidoActivo));
-      sonido.title = sonidoActivo ? 'Silenciar música' : 'Activar música';
-      if (sonidoActivo) iniciarMusica();
-      else musica.pause();
-    });
 
     function limpiarResultado() {
       efectos.textContent = '';
@@ -347,9 +348,9 @@
       if (giroIniciado) return;
       giroIniciado = true;
       girar.disabled = true;
-      iniciarMusica();
+      audioDelPuesto.iniciar();
 
-      const indice = indiceAlAzar(premios.length);
+      const indice = elegirCasilla();
       const premio = premios[indice];
       const angulo = 360 * 9 - indice * (360 / premios.length);
       rueda.style.setProperty('--duracion-giro', duracionGiro + 'ms');
@@ -361,8 +362,8 @@
       function revelar() {
         if (revelado) return;
         revelado = true;
-        elemento('titulo-resultado').textContent = premio ? '¡Felicitaciones!' : '¡Para la próxima seguro sale!';
-        elemento('resultado').textContent = premio || 'Esta vez, sin premio';
+        elemento('titulo-resultado').textContent = premio ? '¡Felicitaciones!' : 'Esta vez, sin premio';
+        elemento('resultado').textContent = premio || mensajesSinPremio[indice];
         girar.textContent = 'GIRO REALIZADO';
         abrirResultado();
         animarResultado(Boolean(premio));
