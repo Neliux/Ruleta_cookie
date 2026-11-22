@@ -4,8 +4,6 @@ const audioDelPuesto = (() => {
   const clave = 'mystery-sweet-musica';
   let estado = { activo: true, tiempo: 0 };
 
-  let estabaSonando = false;
-
   function leerEstado() {
     try {
       const guardado = JSON.parse(sessionStorage.getItem(clave));
@@ -51,7 +49,6 @@ const audioDelPuesto = (() => {
     else pista.pause();
   });
   window.addEventListener('pagehide', () => {
-    estabaSonando = !pista.paused;
     if (pista.readyState > 0) estado.tiempo = pista.currentTime;
     guardar();
     pista.pause();
@@ -59,8 +56,13 @@ const audioDelPuesto = (() => {
   window.addEventListener('pageshow', () => {
     leerEstado();
     if (pista.readyState > 0) recuperarPosicion();
-    if (estabaSonando) iniciar();
+    iniciar();
   });
+
+  // Un toque también permite empezar cuando el navegador bloquea la reproducción automática.
+  document.addEventListener('click', evento => {
+    if (!boton.contains(evento.target)) iniciar();
+  }, true);
 
   leerEstado();
   actualizarBoton();
