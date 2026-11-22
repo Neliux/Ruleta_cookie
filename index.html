@@ -8,6 +8,7 @@
   <style>
     :root {
       color-scheme: dark;
+      overscroll-behavior-y: none;
       font-family: system-ui, sans-serif;
       background: #190e20;
       color: #fff6eb;
@@ -17,12 +18,37 @@
     body {
       margin: 0;
       min-height: 100vh;
-      min-height: 100svh;
-      background-color: #190e20;
-      background-image: linear-gradient(180deg, #160c20b3 0%, #160c2030 64%, #160c2010 100%), url("gato-pastelero.webp");
-      background-position: center center, center bottom;
-      background-repeat: no-repeat;
-      background-size: cover, clamp(340px, 100vw, 550px) auto;
+      min-height: 100dvh;
+      background: #190e20;
+      isolation: isolate;
+    }
+    .fondo-ruleta {
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      overflow: hidden;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center bottom, #301625, #190e20 72%);
+    }
+    .fondo-ruleta::before, .fondo-ruleta::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+    }
+    .fondo-ruleta::before {
+      inset: -8px;
+      background: url("gato-pastelero.webp") center bottom / clamp(340px, 100vw, 550px) auto no-repeat;
+      transform-origin: center bottom;
+    }
+    .fondo-ruleta::after {
+      background: linear-gradient(180deg, #160c20a6, #160c2030 64%, #160c2010);
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .fondo-ruleta::before { animation: gato-ruleta 6s ease-in-out infinite alternate; }
+    }
+    @keyframes gato-ruleta {
+      from { transform: scale(1); }
+      to { transform: translateY(-4px) scale(1.025); }
     }
     main {
       width: 100%;
@@ -227,6 +253,7 @@
   </style>
 </head>
 <body>
+  <div class="fondo-ruleta" aria-hidden="true"></div>
   <main>
     <div class="marca">
       <img src="logo-msc-v2.webp" width="52" height="52" alt="">
@@ -236,12 +263,12 @@
       <h1 id="instruccion" tabindex="-1">Girá la ruleta con un empleado del puesto cerca</h1>
       <p>Todos pueden girar.</p>
     </div>
-    <div class="marco" role="img" aria-label="Ruleta con ocho casillas: cinco sin premio, minigalletas, un Oreo gratis y un mini trozo de tarta">
+    <div class="marco" role="img" aria-label="Ruleta con ocho casillas: cinco sin premio, un paquete de Mini Oreo, un paquete de Oreo clásicas y un mini trozo de tarta">
       <span class="marcador" aria-hidden="true"></span>
       <div class="rueda" id="rueda" aria-hidden="true">
-        <span class="etiqueta uno">Mini&shy;galletas</span>
+        <span class="etiqueta uno">Mini<br>Oreo</span>
         <span class="etiqueta dos">Sin<br>premio</span>
-        <span class="etiqueta tres">Oreo<br>gratis</span>
+        <span class="etiqueta tres">Oreo<br>clásicas</span>
         <span class="etiqueta cuatro">Sin<br>premio</span>
         <span class="etiqueta cinco">Mini trozo<br>de tarta</span>
         <span class="etiqueta seis">Sin<br>premio</span>
@@ -264,10 +291,10 @@
   <audio id="musica" src="musica.mp3" loop preload="none"></audio>
   <script src="musica.js?v=2"></script>
   <script>
-    const premios = ['Ganaste minigalletas', null, 'Ganaste un Oreo gratis', null, 'Ganaste un mini trozo de tarta', null, null, null];
+    const premios = ['Ganaste un paquete de Mini Oreo', null, 'Ganaste un paquete de Oreo clásicas', null, 'Ganaste un mini trozo de tarta', null, null, null];
     const mensajesSinPremio = {
       1: [
-        '¡Uyy, che! Justito entre las minigalletas y el Oreo.',
+        '¡Uyy, che! Justito entre los dos paquetes de Oreo.',
         'Nde, ¡el Oreo pasó cerquita y ni saludó!'
       ],
       3: [
@@ -282,7 +309,7 @@
         'La ruleta se fue de paseo lejos de los premios. ¡Te mandó saludos!',
         'Che, la flecha se tomó el colectivo equivocado.'
       ],
-      7: ['La minigalleta se hizo la distraída en la casilla de al lado.']
+      7: ['Las Mini Oreo se hicieron las distraídas en la casilla de al lado.']
     };
     const pesoPremio = 15;
     const pesoSinPremio = 91;
