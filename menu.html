@@ -22,9 +22,12 @@
     li + li { border-top: 1px solid #b38c635e; }
     h2 { font: bold clamp(1.17rem, 4.8vw, 1.6rem) Georgia, serif; color: #ffe0a2; margin: 0 0 .35rem; }
     p { margin: 0; line-height: 1.45; }
-    .paquetes { margin: .85rem 0 0; display: grid; gap: .45rem; }
-    .paquetes div { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .2rem .65rem; padding: .5rem .65rem; background: #190e20a8; border-radius: 9px; }
-    .paquetes dd { margin: 0; color: #ffe0a2; font-weight: 800; white-space: nowrap; }
+    .paquetes { margin: .85rem 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
+    .paquetes div { display: flex; flex-direction: column; overflow: hidden; background: #190e20a8; border: 1px solid #b38c6365; border-radius: 12px; }
+    .paquetes dt { display: flex; flex: 1; flex-direction: column; gap: .55rem; font-weight: 650; }
+    .paquetes dt span { padding: 0 .6rem; }
+    .paquetes img { width: 100%; height: auto; display: block; background: #e1c490; }
+    .paquetes dd { margin: .2rem .6rem .65rem; color: #ffe0a2; font-weight: 800; white-space: nowrap; }
     .gato { position: relative; margin: 1rem -18px -36px; overflow: hidden; }
     .gato img { display: block; width: 100%; height: auto; }
     .gato::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#190e20, transparent 31%); pointer-events: none; }
@@ -53,8 +56,14 @@
         <h2>Galletitas con chispa de chocolate</h2>
         <p>Galletitas doradas con trocitos de chocolate. Cada paquete trae dos.</p>
         <dl class="paquetes">
-          <div><dt>2 galletitas medianas</dt><dd>G. 2.000</dd></div>
-          <div><dt>2 galletitas grandes</dt><dd>G. 3.000</dd></div>
+          <div>
+            <dt><img src="galletitas-medianas.webp" width="600" height="450" loading="lazy" decoding="async" alt=""><span>2 galletitas medianas</span></dt>
+            <dd>G. 2.000</dd>
+          </div>
+          <div>
+            <dt><img src="galletitas-grandes.webp" width="600" height="450" loading="lazy" decoding="async" alt=""><span>2 galletitas grandes</span></dt>
+            <dd>G. 3.000</dd>
+          </div>
         </dl>
       </li>
     </ul>
