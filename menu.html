@@ -41,13 +41,14 @@
     }
     .gato::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#190e20, transparent 31%); pointer-events: none; }
   </style>
+  <link rel="stylesheet" href="ajustes.css">
 </head>
 <body>
   <main>
     <nav aria-label="Menú">
       <a href="index.html">Volver a la ruleta</a>
       <div class="controles">
-        <button id="sonido" type="button" aria-label="Activar música" aria-pressed="false">🔇</button>
+        <button id="ajustes" type="button" aria-label="Ajustes" aria-haspopup="dialog">⚙️</button>
         <img class="logo" src="logo-msc-v2.webp" width="60" height="60" alt="">
       </div>
     </nav>
@@ -84,6 +85,6 @@
     </figure>
   </main>
   <audio id="musica" src="musica.mp3" loop preload="none"></audio>
-  <script src="musica.js?v=2"></script>
+  <script src="musica.js?v=3"></script>
 </body>
 </html>

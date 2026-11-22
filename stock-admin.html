@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Administración · Mystery Sweet Casino</title>
+  <link rel="stylesheet" href="stock-admin.css">
+</head>
+<body>
+  <main>
+    <header><span>Mystery Sweet Casino</span><h1>Panel de premios</h1></header>
+    <form id="acceso">
+      <label for="clave">Clave de administración</label>
+      <input type="password" id="clave" required autocomplete="current-password">
+      <button type="submit">Entrar</button>
+    </form>
+    <div id="panel" hidden>
+      <section aria-labelledby="titulo-modo">
+        <h2 id="titulo-modo">Premios de la ruleta</h2>
+        <p id="modo"></p>
+        <button id="cambiar" type="button"></button>
+      </section>
+      <section aria-labelledby="titulo-stock">
+        <h2 id="titulo-stock">Stock</h2>
+        <div id="stock"></div>
+      </section>
+    </div>
+    <p id="estado" role="status"></p>
+    <div id="acciones" hidden><button id="actualizar" type="button">Actualizar</button><button id="salir" type="button">Salir</button></div>
+  </main>
+  <script src="stock-admin.js" defer></script>
+</body>
+</html>

@@ -144,7 +144,7 @@
     #girar:disabled { cursor: default; opacity: .82; }
     #estado-giro:empty { display: none; }
     #estado-giro:not(:empty) { margin: 0; padding: .45rem .65rem; border-radius: 9px; background: #24132bee; color: #ffe0a2; font-weight: 700; }
-    #sonido {
+    #ajustes {
       position: fixed;
       z-index: 2;
       top: max(8px, env(safe-area-inset-top));
@@ -253,6 +253,7 @@
       .etiqueta { transition: none; }
     }
   </style>
+  <link rel="stylesheet" href="ajustes.css">
 </head>
 <body>
   <div class="fondo-ruleta" aria-hidden="true"></div>
@@ -290,9 +291,9 @@
       <button id="cerrar" type="button" autofocus>Cerrar</button>
     </div>
   </dialog>
-  <button id="sonido" type="button" title="Silenciar música" aria-label="Música" aria-pressed="true">🔊</button>
+  <button id="ajustes" type="button" aria-label="Ajustes" aria-haspopup="dialog">⚙️</button>
   <audio id="musica" src="musica.mp3" loop preload="none"></audio>
-  <script src="musica.js?v=2"></script>
+  <script src="musica.js?v=3"></script>
   <script>
     const premios = ['Ganaste un paquete de Mini Oreo', null, 'Ganaste un paquete de Oreo clásicas', null, 'Ganaste un mini trozo de tarta', null, null, null];
     const mensajesSinPremio = {
