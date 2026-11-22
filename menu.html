@@ -14,19 +14,30 @@
     nav a, nav button { color: #ffe0a2; background: #24132b; display: inline-flex; align-items: center; justify-content: center; min-height: 44px; padding: .35rem .8rem; border: 1px solid #be9561; border-radius: 24px; text-decoration: none; font: inherit; font-weight: 700; }
     nav button { min-width: 44px; cursor: pointer; }
     a:focus-visible, button:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
-    h1 { font: bold clamp(2rem, 8vw, 3.2rem) Georgia, serif; text-align: center; margin: 22px 0; }
-    .carta { margin: 0; padding: 0; list-style: none; border: 1px solid #b38c63; border-radius: 20px; background: #2b182f; }
+    .controles { display: flex; align-items: center; gap: 9px; }
+    .logo { display: block; width: 60px; height: 60px; padding: 4px; border-radius: 12px; background: #fff5e2; object-fit: contain; }
+    h1 { color: #fff1cc; font: bold clamp(2rem, 8vw, 3.2rem) Georgia, serif; text-align: center; margin: 22px 0; }
+    .carta { position: relative; z-index: 1; margin: 0; padding: 0; list-style: none; border: 1px solid #b38c63; border-radius: 20px; background: linear-gradient(155deg, #44243c, #271829 68%); box-shadow: 0 12px 26px #10091588; }
     li { padding: 1.15rem 1.25rem; }
     li + li { border-top: 1px solid #b38c635e; }
     h2 { font: bold clamp(1.17rem, 4.8vw, 1.6rem) Georgia, serif; color: #ffe0a2; margin: 0 0 .35rem; }
     p { margin: 0; line-height: 1.45; }
+    .paquetes { margin: .85rem 0 0; display: grid; gap: .45rem; }
+    .paquetes div { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: .2rem .65rem; padding: .5rem .65rem; background: #190e20a8; border-radius: 9px; }
+    .paquetes dd { margin: 0; color: #ffe0a2; font-weight: 800; white-space: nowrap; }
+    .gato { position: relative; margin: 1rem -18px -36px; overflow: hidden; }
+    .gato img { display: block; width: 100%; height: auto; }
+    .gato::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#190e20, transparent 31%); pointer-events: none; }
   </style>
 </head>
 <body>
   <main>
     <nav aria-label="Menú">
       <a href="index.html">Volver a la ruleta</a>
-      <button id="sonido" type="button" aria-label="Activar música" aria-pressed="false">🔇</button>
+      <div class="controles">
+        <button id="sonido" type="button" aria-label="Activar música" aria-pressed="false">🔇</button>
+        <img class="logo" src="logo-mystery.webp" width="60" height="60" alt="Mystery Sweet Casino">
+      </div>
     </nav>
     <h1>Menú</h1>
     <ul class="carta">
@@ -40,9 +51,16 @@
       </li>
       <li>
         <h2>Galletitas con chispa de chocolate</h2>
-        <p>Galletitas doradas con trocitos de chocolate.</p>
+        <p>Galletitas doradas con trocitos de chocolate. Cada paquete trae dos.</p>
+        <dl class="paquetes">
+          <div><dt>2 galletitas medianas</dt><dd>G. 2.000</dd></div>
+          <div><dt>2 galletitas grandes</dt><dd>G. 3.000</dd></div>
+        </dl>
       </li>
     </ul>
+    <figure class="gato">
+      <img src="gato-menu.webp" width="960" height="640" loading="lazy" decoding="async" alt="Gato chef que mira el menú con las patas delanteras levantadas">
+    </figure>
   </main>
   <audio id="musica" src="musica.mp3" loop preload="none"></audio>
   <script src="musica.js?v=2"></script>
