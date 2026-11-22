@@ -43,6 +43,8 @@
       max-width: 24ch;
       text-shadow: 0 2px 10px #100813;
     }
+    .marca { display: flex; align-items: center; justify-content: center; gap: .55rem; color: #ffe0a2; font: bold clamp(1rem, 4.5vw, 1.45rem) Georgia, serif; }
+    .marca img { display: block; width: 52px; height: 52px; }
     .indicacion p { margin: .4rem 0 0; color: #ffe0a2; font-weight: 700; }
     .marco {
       position: relative;
@@ -226,6 +228,10 @@
 </head>
 <body>
   <main>
+    <div class="marca">
+      <img src="logo-msc-v2.webp" width="52" height="52" alt="">
+      <span>Mystery Sweet Casino</span>
+    </div>
     <div class="indicacion">
       <h1 id="instruccion" tabindex="-1">Girá la ruleta con un empleado del puesto cerca</h1>
       <p>Todos pueden girar.</p>
@@ -260,11 +266,23 @@
   <script>
     const premios = ['Ganaste minigalletas', null, 'Ganaste un Oreo gratis', null, 'Ganaste un mini trozo de tarta', null, null, null];
     const mensajesSinPremio = {
-      1: 'Uyyy, entre las minigalletas y el Oreo. ¡Casi!',
-      3: 'El Oreo y la tarta te hicieron el pasillito. ¡Por poquito!',
-      5: 'La tarta quedó ahí nomás. ¡Hasta se sentía el olorcito!',
-      6: 'La ruleta se fue de paseo lejos de los premios. ¡Te mandó saludos!',
-      7: 'La minigalleta se escondió en la casilla de al lado. ¡Qué traviesa!'
+      1: [
+        '¡Uyy, che! Justito entre las minigalletas y el Oreo.',
+        'Nde, ¡el Oreo pasó cerquita y ni saludó!'
+      ],
+      3: [
+        'La tarta y el Oreo te hicieron el pasillito. ¡Por un pelito!',
+        '¡Qué macana! La tarta estaba ahí nomás.'
+      ],
+      5: [
+        'La tarta quedó ahí nomás. ¡Hasta se sentía el olorcito!',
+        '¡Epa! La tarta se hizo la difícil y se quedó al ladito.'
+      ],
+      6: [
+        'La ruleta se fue de paseo lejos de los premios. ¡Te mandó saludos!',
+        'Che, la flecha se tomó el colectivo equivocado.'
+      ],
+      7: ['La minigalleta se hizo la distraída en la casilla de al lado.']
     };
     const pesoPremio = 15;
     const pesoSinPremio = 91;
@@ -367,7 +385,8 @@
         if (revelado) return;
         revelado = true;
         elemento('titulo-resultado').textContent = premio ? '¡Felicitaciones!' : '¡La próxima seguro sale!';
-        elemento('resultado').textContent = premio || mensajesSinPremio[indice];
+        const mensajes = mensajesSinPremio[indice];
+        elemento('resultado').textContent = premio || mensajes[indiceAlAzar(mensajes.length)];
         girar.textContent = 'GIRO REALIZADO';
         abrirResultado();
         animarResultado(Boolean(premio));

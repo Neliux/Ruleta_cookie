@@ -15,7 +15,8 @@
     nav button { min-width: 44px; cursor: pointer; }
     a:focus-visible, button:focus-visible { outline: 3px solid #fff; outline-offset: 4px; }
     .controles { display: flex; align-items: center; gap: 9px; }
-    .logo { display: block; width: 60px; height: 60px; padding: 4px; border-radius: 12px; background: #fff5e2; object-fit: contain; }
+    .marca { text-align: center; margin: .9rem 0 0; color: #ffe0a2; font: bold 1.2rem Georgia, serif; }
+    .logo { display: block; width: 60px; height: 60px; padding: 1px; object-fit: contain; }
     h1 { color: #fff1cc; font: bold clamp(2rem, 8vw, 3.2rem) Georgia, serif; text-align: center; margin: 22px 0; }
     .carta { position: relative; z-index: 1; margin: 0; padding: 0; list-style: none; border: 1px solid #b38c63; border-radius: 20px; background: linear-gradient(155deg, #44243c, #271829 68%); box-shadow: 0 12px 26px #10091588; }
     li { padding: 1.15rem 1.25rem; }
@@ -30,6 +31,13 @@
     .paquetes dd { margin: .2rem .6rem .65rem; color: #ffe0a2; font-weight: 800; white-space: nowrap; }
     .gato { position: relative; margin: 1rem -18px -36px; overflow: hidden; }
     .gato img { display: block; width: 100%; height: auto; }
+    @media (prefers-reduced-motion: no-preference) {
+      .gato img { animation: gato-saluda 5s ease-in-out infinite alternate; transform-origin: center bottom; }
+    }
+    @keyframes gato-saluda {
+      from { transform: scale(1); }
+      to { transform: translateY(-4px) scale(1.025); }
+    }
     .gato::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#190e20, transparent 31%); pointer-events: none; }
   </style>
 </head>
@@ -39,9 +47,10 @@
       <a href="index.html">Volver a la ruleta</a>
       <div class="controles">
         <button id="sonido" type="button" aria-label="Activar música" aria-pressed="false">🔇</button>
-        <img class="logo" src="logo-mystery.webp" width="60" height="60" alt="Mystery Sweet Casino">
+        <img class="logo" src="logo-msc-v2.webp" width="60" height="60" alt="">
       </div>
     </nav>
+    <p class="marca">Mystery Sweet Casino</p>
     <h1>Menú</h1>
     <ul class="carta">
       <li>
