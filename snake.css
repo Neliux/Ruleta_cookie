@@ -1,28 +1,29 @@
 * { box-sizing:border-box; }
-body { margin:0; background:#211628; color:#fff4e5; font:1rem system-ui,sans-serif; }
-main { width:min(100% - 1.5rem, 26rem); margin:0 auto; padding:.6rem 0 1rem; text-align:center; }
-nav { display:flex; justify-content:space-between; }
-nav a { color:#ffd092; display:flex; align-items:center; min-height:44px; }
-h1 { margin:.3rem 0; }
-.puntos { margin:.4rem 0 .65rem; font-weight:800; }
-.marco { position:relative; width:min(100%, 53vh); margin:auto; }
-#tablero { display:grid; grid-template-columns:repeat(10,minmax(0,1fr)); grid-template-rows:repeat(10,minmax(0,1fr)); aspect-ratio:1; touch-action:none; border:2px solid #a77792; border-radius:14px; overflow:hidden; background:#201422; user-select:none; }
-.casilla { display:grid; place-items:center; font-size:clamp(.9rem, 4.4vw, 1.55rem); line-height:1; min-height:0; }
-.casilla:nth-child(20n + 2), .casilla:nth-child(20n + 4), .casilla:nth-child(20n + 6), .casilla:nth-child(20n + 8), .casilla:nth-child(20n + 10),
-.casilla:nth-child(20n + 11), .casilla:nth-child(20n + 13), .casilla:nth-child(20n + 15), .casilla:nth-child(20n + 17), .casilla:nth-child(20n + 19) { background:#2c1d30; }
-.casilla.cuerpo, .casilla.cabeza { background:#f3aa60; color:#311823; box-shadow:inset 0 -4px #bb633d80; }
-.casilla.cabeza { border-radius:6px; }
-.casilla.aviso { animation:parpadeo .23s steps(2,start) 2; }
-@keyframes parpadeo { to { opacity:.33; } }
-@media (prefers-reduced-motion:reduce) { .casilla.aviso { animation:none; } }
-#ficha { position:absolute; inset:0; display:grid; justify-items:center; align-content:center; border-radius:14px; background:#251829eb; padding:.6rem; }
+:root { color-scheme:dark; }
+body { margin:0; min-height:100vh; background:radial-gradient(ellipse at 50% 8%,#4e2b2b,#201418 64%); color:#fff3dd; font:1rem system-ui,sans-serif; }
+.juego { width:min(calc(100% - 1.5rem), 30rem, max(20rem, 66dvh)); margin:0 auto; padding:.75rem 0 1rem; }
+nav, header, .enlaces, .marcador { display:flex; align-items:center; gap:.55rem; }
+nav, header { justify-content:space-between; }
+nav { margin-bottom:.85rem; }
+.boton-nav, #ajustes, .mandos button { display:grid; place-items:center; border:1px solid #754a43; border-radius:12px; min-height:44px; background:#392426; color:#ffdcab; font:700 .95rem system-ui,sans-serif; padding:0 .75rem; text-decoration:none; }
+#ajustes { font-size:1.1rem; padding:0; }
+h1 { font:900 clamp(1.75rem,7.6vw,2.75rem)/1 Georgia,serif; margin:0; letter-spacing:-.055em; }
+h1 em { color:#ffc373; }
+.marcador { white-space:nowrap; font-weight:800; gap:.25rem; background:#25171a; border:1px solid #704741; padding:.4rem .55rem; border-radius:12px; font-variant-numeric:tabular-nums; }
+.meta { color:#deb290; font-size:.88rem; }
+progress { display:block; width:100%; height:7px; margin:.75rem 0 .55rem; appearance:none; background:#3e2526; border:0; border-radius:99px; overflow:hidden; }
+progress::-webkit-progress-bar { background:#3e2526; }
+progress::-webkit-progress-value { background:#ffc373; }
+progress::-moz-progress-bar { background:#ffc373; }
+.marco { position:relative; overflow:hidden; border:2px solid #a06b54; border-radius:21px; box-shadow:0 12px 32px #130b1290, inset 0 0 0 1px #ffffff20; }
+#tablero { display:block; width:100%; height:auto; aspect-ratio:1; touch-action:none; background:#271c21; }
+#ficha { position:absolute; inset:0; display:grid; place-items:end center; padding:.65rem; background:linear-gradient(transparent 28%,#1a1117b5 70%); }
 #ficha[hidden] { display:none; }
-#ficha h2 { margin:0 0 .9rem; font-size:clamp(1.05rem,5vw,1.65rem); }
-button { min-height:44px; min-width:44px; background:#ffc579; color:#2b1a2a; border:0; border-radius:10px; font:inherit; font-weight:800; cursor:pointer; touch-action:manipulation; }
-#jugar { padding:0 1rem; }
-.mandos { display:grid; gap:.3rem; grid-template-columns:repeat(3,46px); justify-content:center; margin:.7rem auto; }
-.mandos button { font-size:1.35rem; }
-[data-dir=up] { grid-column:2; }
-[data-dir=left] { grid-column:1; grid-row:2; }
-[data-dir=down] { grid-column:2; grid-row:2; }
-[data-dir=right] { grid-column:3; grid-row:2; }
+.ficha { width:min(100%,23rem); background:#25191bee; border:1px solid #a06b54; border-radius:17px; text-align:center; padding:clamp(.65rem,3vw,1.15rem); }
+.ficha h2 { font:800 clamp(1.22rem,5.6vw,1.8rem) Georgia,serif; margin:0; }
+.ficha p { margin:.3rem 0 .65rem; color:#f5cbab; }
+#jugar { min-height:44px; width:100%; border:0; border-radius:9px; background:#ffc373; color:#2c1a1c; font:800 1rem system-ui,sans-serif; cursor:pointer; }
+.mandos { display:grid; grid-template-columns:repeat(4,1fr); gap:.45rem; margin:.75rem auto .4rem; }
+.mandos button { touch-action:manipulation; font-size:1.4rem; cursor:pointer; }
+.mandos button:active { background:#ffc373; color:#22171a; }
+.ayuda { text-align:center; margin:.45rem 0 0; color:#ebc4a8; font-size:.87rem; }

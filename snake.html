@@ -3,29 +3,45 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#201418">
   <title>Gato Viborita · Mystery Sweet Casino</title>
-  <link rel="stylesheet" href="snake.css">
+  <link rel="stylesheet" href="ajustes.css">
+  <link rel="stylesheet" href="snake.css?v=2">
 </head>
 <body>
-  <main>
-    <nav aria-label="Volver"><a href="./">← Ruleta</a><a href="menu.html">Menú</a></nav>
-    <h1>Gato Viborita</h1>
-    <p class="puntos">🍪 <output id="puntos" aria-label="Galletitas recogidas">0</output> / 80</p>
+  <main class="juego">
+    <nav aria-label="Navegación">
+      <a class="boton-nav" href="./">← Ruleta</a>
+      <div class="enlaces">
+        <a class="boton-nav" href="menu.html">Menú</a>
+        <button id="ajustes" type="button" data-juego="true" aria-label="Ajustes" aria-haspopup="dialog">⚙️</button>
+      </div>
+    </nav>
+    <header>
+      <h1>Gato <em>Viborita</em></h1>
+      <div class="marcador"><span aria-hidden="true">🍪</span> <output id="puntos" aria-label="Galletitas recogidas">0</output><span class="meta">/ 80</span></div>
+    </header>
+    <progress id="avance" max="80" value="0" aria-label="Progreso hacia la victoria"></progress>
     <div class="marco">
-      <div id="tablero" aria-hidden="true"></div>
+      <canvas id="tablero" width="600" height="600" aria-label="Tablero de 10 por 10">El juego requiere un navegador compatible con Canvas.</canvas>
       <section id="ficha" aria-labelledby="mensaje">
-        <h2 id="mensaje">¡A juntar galletitas!</h2>
-        <button type="button" id="jugar">Jugar</button>
+        <div class="ficha">
+          <h2 id="mensaje">¡A juntar galletitas!</h2>
+          <p id="detalle">Guiá al gato y esquivá las bombas.</p>
+          <button type="button" id="jugar">Jugar</button>
+        </div>
       </section>
     </div>
     <div class="mandos" aria-label="Controles de dirección">
-      <button type="button" data-dir="up" aria-label="Arriba">↑</button>
       <button type="button" data-dir="left" aria-label="Izquierda">←</button>
+      <button type="button" data-dir="up" aria-label="Arriba">↑</button>
       <button type="button" data-dir="down" aria-label="Abajo">↓</button>
       <button type="button" data-dir="right" aria-label="Derecha">→</button>
     </div>
-    <p>Deslizá o usá las flechas. Esquivá las bombas 💣</p>
+    <p class="ayuda">Deslizá en el tablero o usá las flechas.</p>
   </main>
-  <script src="snake.js" defer></script>
+  <audio id="musica" src="musica.mp3" loop preload="none"></audio>
+  <script src="musica.js?v=4"></script>
+  <script src="snake.js?v=2" defer></script>
 </body>
 </html>

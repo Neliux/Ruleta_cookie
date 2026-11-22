@@ -293,9 +293,9 @@
   </dialog>
   <button id="ajustes" type="button" aria-label="Ajustes" aria-haspopup="dialog">⚙️</button>
   <audio id="musica" src="musica.mp3" loop preload="none"></audio>
-  <script src="musica.js?v=3"></script>
+  <script src="musica.js?v=4"></script>
   <script>
-    const premios = ['Ganaste un paquete de Mini Oreo', null, 'Ganaste un paquete de Oreo clásicas', null, 'Ganaste un mini trozo de tarta', null, null, null];
+    const premios = ['un paquete de Mini Oreo', null, 'un paquete de Oreo clásicas', null, 'un mini trozo de tarta', null, null, null];
     const mensajesSinPremio = {
       1: [
         '¡Uyy, che! Justito entre los dos paquetes de Oreo.',
@@ -315,7 +315,7 @@
       ],
       7: ['Las Mini Oreo se hicieron las distraídas en la casilla de al lado.']
     };
-    const urlGiro = "https://eyvzpzwagdccphsktogu.supabase.co/rest/v1/rpc/mystery_sweet_girar";
+    const urlGiro = "https://eyvzpzwagdccphsktogu.supabase.co/rest/v1/rpc/mystery_sweet_girar_detalle";
     const clavePublica = "sb_publishable_TuwjOiBnavNXWkxzGye_Jw_20vuNP8E";
     const claveGiroPendiente = "mystery-sweet-giro-pendiente";
     const duracionGiro = 7000;
@@ -329,6 +329,7 @@
     const estadoGiro = elemento("estado-giro");
     let giroIniciado = false;
     let idGiro;
+    let angulo = 0;
 
     function indiceAlAzar(cantidad) {
       if (!window.crypto || typeof window.crypto.getRandomValues !== 'function') {
@@ -357,7 +358,7 @@
       return idGiro;
     }
 
-    async function pedirCasilla() {
+    async function pedirResultado() {
       const controlador = new AbortController();
       const limite = setTimeout(() => controlador.abort(), 10000);
       try {
@@ -368,11 +369,13 @@
           signal: controlador.signal
         });
         if (!respuesta.ok) throw new Error('No se confirmó el giro');
-        const casilla = await respuesta.json();
-        if (!Number.isInteger(casilla) || casilla < 0 || casilla >= premios.length) {
+        const resultado = await respuesta.json();
+        const { casilla, agotado } = resultado;
+        if (!Number.isInteger(casilla) || casilla < 0 || casilla >= premios.length ||
+            typeof agotado !== 'boolean' || (agotado && !premios[casilla])) {
           throw new Error('Respuesta de giro inválida');
         }
-        return casilla;
+        return resultado;
       } finally {
         clearTimeout(limite);
       }
@@ -402,7 +405,8 @@
     function limpiarResultado() {
       efectos.textContent = '';
       document.body.classList.remove('ventana-abierta');
-      elemento('instruccion').focus();
+      if (girar.disabled) elemento('instruccion').focus();
+      else girar.focus();
     }
 
     function abrirResultado() {
@@ -434,9 +438,9 @@
 
       girar.textContent = 'CONECTANDO…';
       estadoGiro.textContent = '';
-      let indice;
+      let resultado;
       try {
-        indice = await pedirCasilla();
+        resultado = await pedirResultado();
       } catch (_) {
         giroIniciado = false;
         girar.disabled = false;
@@ -444,34 +448,46 @@
         estadoGiro.textContent = 'No pudimos confirmar el giro. Revisá la conexión y volvé a intentar.';
         return;
       }
+      const { casilla: indice, agotado } = resultado;
       const premio = premios[indice];
-      const angulo = 360 * 9 - indice * (360 / premios.length);
+      angulo = 360 * (Math.ceil(angulo / 360) + 9) - indice * (360 / premios.length);
       rueda.style.setProperty('--duracion-giro', duracionGiro + 'ms');
       rueda.style.setProperty('--contragiro', -angulo + 'deg');
       rueda.style.transform = 'rotate(' + angulo + 'deg)';
       girar.textContent = 'GIRANDO…';
 
-      let revelado = false;
+      let temporizador;
+      function alTerminar(evento) {
+        if (evento.target === rueda && evento.propertyName === 'transform') revelar();
+      }
+
       function revelar() {
-        if (revelado) return;
-        revelado = true;
-        elemento('titulo-resultado').textContent = premio ? '¡Felicitaciones!' : '¡La próxima seguro sale!';
-        const mensajes = mensajesSinPremio[indice];
-        elemento('resultado').textContent = premio || mensajes[indiceAlAzar(mensajes.length)];
-        girar.textContent = 'GIRO REALIZADO';
+        rueda.removeEventListener('transitionend', alTerminar);
+        clearTimeout(temporizador);
+        if (agotado) {
+          elemento('titulo-resultado').textContent = '¡Premio agotado!';
+          elemento('resultado').textContent = 'Se agotó el stock de ' + premio.replace(/^un /, '') + '. Cerrá la ventana para volver a girar.';
+          girar.textContent = 'VOLVER A GIRAR';
+          girar.disabled = false;
+          giroIniciado = false;
+          idGiro = undefined;
+        } else {
+          elemento('titulo-resultado').textContent = premio ? '¡Felicitaciones!' : '¡La próxima seguro sale!';
+          const mensajes = mensajesSinPremio[indice];
+          elemento('resultado').textContent = premio ? 'Ganaste ' + premio : mensajes[indiceAlAzar(mensajes.length)];
+          girar.textContent = 'GIRO REALIZADO';
+        }
         try {
           sessionStorage.removeItem(claveGiroPendiente);
         } catch (_) {}
         abrirResultado();
-        animarResultado(Boolean(premio));
+        if (!agotado) animarResultado(Boolean(premio));
       }
 
       if (reducirMovimiento.matches) revelar();
       else {
-        rueda.addEventListener('transitionend', evento => {
-          if (evento.target === rueda && evento.propertyName === 'transform') revelar();
-        });
-        setTimeout(revelar, duracionGiro + 250);
+        rueda.addEventListener('transitionend', alTerminar);
+        temporizador = setTimeout(revelar, duracionGiro + 250);
       }
     });
   </script>

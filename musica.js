@@ -10,9 +10,9 @@ const audioDelPuesto = (() => {
     <header><h2 id="titulo-ajustes">Ajustes</h2><form method="dialog"><button type="submit" aria-label="Cerrar ajustes">✕</button></form></header>
     <label for="volumen">Volumen <output id="nivel-volumen" for="volumen"></output></label>
     <input id="volumen" type="range" min="0" max="100">
-    <label for="suerte">Suerte <span>Solo de adorno</span></label>
+    <label for="suerte">Suerte <span>Fundamental!</span></label>
     <input id="suerte" type="range" min="0" max="100">
-    <a href="snake.html">🐱 Jugar al Gato Viborita</a>`;
+    ${boton.dataset.juego ? '' : '<a href="snake.html">🐱 Jugar al Gato Viborita</a>'}`;
   document.body.append(panel);
   const volumen = panel.querySelector('#volumen');
   const nivel = panel.querySelector('#nivel-volumen');
