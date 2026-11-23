@@ -1,0 +1,16 @@
+.fondo-juego {
+  isolation: isolate;
+  min-height: 100dvh;
+}
+.fondo-juego::before {
+  content: '';
+  position: fixed;
+  z-index: -1;
+  pointer-events: none;
+  inset: 0;
+  background: linear-gradient(180deg,#201418 7%,#201418a8 48%,transparent 81%),
+    url('gato-control.webp') center bottom / auto min(100%, 155vw) no-repeat;
+}
+.fondo-juego .ayuda,.fondo-juego #estado {
+  text-shadow: 0 1px 5px #150b10,0 0 10px #150b10;
+}

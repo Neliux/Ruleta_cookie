@@ -5,24 +5,47 @@ const dulces = ['🍪','🍰','🧁','🍩','🍫','🥧'];
 const nombres = ['Galletita','Tarta','Magdalena','Dona','Chocolate','Pastel'];
 let modo, sesion=0, bloqueado, primera, pares, intentos, receta, posicion;
 function esperar(ms) { return new Promise(resolve=>setTimeout(resolve,ms)); }
+function reaccion(boton, tipo) {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const colores = { toque:'#ffcf87', acierto:'#a4e3a8', error:'#ff967c' };
+  boton.animate([
+    { scale: '1', filter: 'brightness(1)' },
+    { scale: tipo === 'error' ? '.94' : '1.06', filter: 'brightness(1.24)', boxShadow: '0 0 22px '+colores[tipo] },
+    { scale: '1', filter: 'brightness(1)' }
+  ], { duration: tipo === 'toque' ? 240 : 430 });
+}
+
 function mostrarCarta(b,i) {
-  b.textContent=dulces[i]; b.setAttribute('aria-label',nombres[i]); b.classList.add('abierta');
+  b.setAttribute('aria-label',nombres[i]); b.classList.add('abierta');
 }
 function tapar(b,i) {
-  b.textContent='✦'; b.setAttribute('aria-label','Dar vuelta la carta '+(i+1)); b.classList.remove('abierta');
+  b.setAttribute('aria-label','Dar vuelta la carta '+(i+1)); b.classList.remove('abierta');
 }
 async function elegir(b,i,valor) {
   if(bloqueado || b.classList.contains('abierta')) return;
   mostrarCarta(b,valor);
+  reaccion(b,'toque');
   if(!primera){primera={b,i,valor};return;}
   intentos++;
   const previa=primera;
   primera=null;
   if(previa.valor===valor){
-    pares++; b.classList.add('pareja'); previa.b.classList.add('pareja');
+    pares++;
+    for (const pareja of [b, previa.b]) {
+      pareja.classList.add('pareja');
+      pareja.setAttribute('aria-disabled','true');
+      reaccion(pareja,'acierto');
+    }
     estadoJuego.textContent=pares===6 ? '¡Completaste la bandeja en '+intentos+' intentos!' : pares+' de 6 pares encontrados.';
   } else {
-    bloqueado=true; const actual=sesion; await esperar(850);
+    bloqueado=true;
+    estadoJuego.textContent='No coinciden. Probá con otro par.';
+    const actual=sesion;
+    await esperar(340);
+    if(actual!==sesion)return;
+    reaccion(b,'error');
+    reaccion(previa.b,'error');
+    await esperar(520);
     if(actual!==sesion)return;
     tapar(b,i); tapar(previa.b,previa.i); bloqueado=false;
   }
@@ -43,7 +66,8 @@ async function ronda() {
 }
 function ingrediente(i) {
   if(bloqueado)return;
-  if(receta[posicion]!==i){bloqueado=true;estadoJuego.textContent='¡Uy! El chef esperaba '+nombres[receta[posicion]]+'. Llegaste a la ronda '+receta.length+'.';return;}
+  if(receta[posicion]!==i){reaccion(mesa.children[i],'error'); bloqueado=true;estadoJuego.textContent='¡Uy! El chef esperaba '+nombres[receta[posicion]]+'. Llegaste a la ronda '+receta.length+'.';return;}
+  reaccion(mesa.children[i],'acierto');
   posicion++;estadoJuego.textContent='¡Bien! '+posicion+' de '+receta.length;
   if(posicion===receta.length){
     bloqueado=true;
@@ -63,7 +87,21 @@ function iniciarJuego(tipo) {
   }
   cartas.forEach((valor,i)=>{
     const b=document.createElement('button');
-    if(tipo==='memoria'){tapar(b,i); b.onclick=()=>elegir(b,i,valor);}
+    if(tipo==='memoria'){
+      b.className='carta-juego';
+      const interior=document.createElement('span');
+      interior.className='giro-carta';
+      interior.setAttribute('aria-hidden','true');
+      for (const [cara, texto] of [['dorso','✦'], ['frente',dulces[valor]]]) {
+        const elemento=document.createElement('span');
+        elemento.className=cara;
+        elemento.textContent=texto;
+        interior.append(elemento);
+      }
+      b.append(interior);
+      tapar(b,i);
+      b.onclick=()=>elegir(b,i,valor);
+    }
     else {b.textContent=dulces[i];b.setAttribute('aria-label',nombres[i]);b.onclick=()=>ingrediente(i);}
     mesa.append(b);
   });

@@ -2,7 +2,7 @@ const audioDelPuesto = (() => {
   const pista = document.getElementById('musica');
   const boton = document.getElementById('ajustes');
   const clave = 'mystery-sweet-musica';
-  const estado = { volumen: .25, tiempo: 0, suerte: 50 };
+  const estado = { volumen: .5, tiempo: 0, suerte: 50 };
   const panel = document.createElement('dialog');
   panel.id = 'panel-ajustes';
   panel.setAttribute('aria-labelledby', 'titulo-ajustes');

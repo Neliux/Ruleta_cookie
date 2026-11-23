@@ -1,1 +1,51 @@
 *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% 8%,#4e2b2b,#201418 72%);color:#fff3dd;font:1rem system-ui}main{width:min(92%,30rem);margin:auto;padding:1rem 0}nav{display:flex;gap:.6rem;align-items:center}nav a:first-child{margin-right:auto}button,nav a,.cartelera a{cursor:pointer;background:#392426;border:1px solid #845746;border-radius:13px;color:#ffdfb4;font:700 1rem system-ui;text-decoration:none;padding:.7rem}h1{font:800 clamp(2rem,8vw,3rem) Georgia,serif;letter-spacing:-.04em;color:#ffd199}.cartelera{display:grid;gap:1rem}.cartelera>*{display:flex;align-items:center;gap:1rem;padding:1.15rem;text-align:left}.cartelera b{display:grid;place-items:center;background:#503137;border-radius:15px;width:3.5rem;height:3.5rem;font-size:2rem}.cartelera span{font:700 1.35rem Georgia,serif}small{display:block;font:normal .95rem system-ui;margin-top:.35rem;color:#e0bba7}#volver,#reiniciar{margin:1rem 0}header{display:flex;align-items:center;gap:1rem}header h1{font-size:2rem;margin:0}.michi{position:relative;flex:none;width:58px;height:46px;margin-top:13px;border-radius:45%;background:#f4b16f;text-align:center;color:#45252a;font:bold 17px/48px system-ui}.michi:before,.michi:after{content:"";position:absolute;top:-9px;background:#dd8954;width:18px;height:20px;clip-path:polygon(0 0,100% 75%,10% 100%)}.michi:before{left:0}.michi:after{right:0;transform:scaleX(-1)}.michi i{position:absolute;background:#fff0d7;width:28px;height:13px;top:-8px;left:15px;border-radius:3px;z-index:1}.michi i:before{content:"";position:absolute;background:#fff6e7;width:32px;height:14px;top:-8px;left:-2px;border-radius:50%;box-shadow:-4px 2px #fff6e7,4px 2px #fff6e7}#mesa{display:grid;gap:.45rem;grid-template-columns:repeat(4,minmax(0,1fr))}#mesa.receta{grid-template-columns:repeat(2,minmax(0,1fr))}#mesa button{aspect-ratio:1;background:#56343a;font-size:clamp(1.35rem,7vw,2.4rem);touch-action:manipulation}#mesa .abierta,#mesa .luz{background:#ffcc87;color:#482829;border-color:#fff4cf;box-shadow:inset 0 0 0 3px #ffe6b0}#mesa .pareja{background:#3a5949}.receta button:nth-child(2){background:#593a54!important}.receta button.luz{outline:4px solid #fff3c7;transform:scale(.94);filter:brightness(1.6)}#estado{min-height:1.5rem;color:#f9d2b2}
+
+/* Each button retains both faces so the reverse stays visible throughout the turn. */
+#mesa button.carta-juego {
+  padding:0;
+  perspective:650px;
+  background:transparent;
+  border:0;
+  box-shadow:none;
+}
+.giro-carta {
+  display:block;
+  position:relative;
+  width:100%;
+  height:100%;
+  transform-style:preserve-3d;
+  transition:transform .34s cubic-bezier(.25,.75,.3,1.1);
+}
+.carta-juego.abierta .giro-carta { transform:rotateY(180deg); }
+.giro-carta > span {
+  position:absolute;
+  display:grid;
+  place-items:center;
+  inset:0;
+  border:1px solid #ca9669;
+  border-radius:13px;
+  backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+}
+.giro-carta .dorso {
+  color:#ffc97d;
+  background:repeating-linear-gradient(135deg,#69434a 0 7px,#53323c 7px 14px);
+  box-shadow:inset 0 0 0 5px #3a242b,0 4px 9px #180c1280;
+}
+.giro-carta .frente {
+  transform:rotateY(180deg);
+  background:radial-gradient(circle at 42% 25%,#fff0bd,#e7a462);
+}
+.pareja .giro-carta .frente { background:radial-gradient(circle at 42% 25%,#e5f4b0,#85aa75); }
+#mesa.receta button {
+  background:radial-gradient(circle at 45% 30%,#85514b,#472836);
+  box-shadow:inset 0 0 0 4px #ffffff19,0 4px 10px #180c1280;
+  transition:filter .15s,transform .15s,outline-color .15s;
+}
+#mesa.receta button:nth-child(2) { background:radial-gradient(circle at 45% 30%,#80516b,#462b46)!important; }
+#mesa.receta button:nth-child(3) { background:radial-gradient(circle at 45% 30%,#71584a,#4b3029); }
+#mesa.receta button:nth-child(4) { background:radial-gradient(circle at 45% 30%,#784c58,#482d37); }
+#mesa button:active { filter:brightness(1.22); }
+@media (prefers-reduced-motion:reduce) {
+  .giro-carta,#mesa.receta button { transition:none; }
+}

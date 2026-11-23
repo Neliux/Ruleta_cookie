@@ -61,7 +61,7 @@ if (formulario) {
     try {
       await consultarFeria('msc_encargar',{...datos,p_id:id});
       formulario.reset(); campos.forEach(c=>c.value=0); formulario.oninput();
-      aviso.textContent='¡Pedido recibido! Podés retirarlo en el puesto.'; ultimoTexto=null;
+      aviso.textContent='¡Pedido recibido! Recordá acercarte a nuestro puesto para retirar tu pedido.'; ultimoTexto=null;
     } catch {aviso.textContent='No pudimos confirmar el pedido. Volvé a intentar.';}
     finally {enviar.disabled=false;}
   };
