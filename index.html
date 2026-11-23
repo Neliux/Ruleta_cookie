@@ -106,7 +106,7 @@
       border-radius: 50%;
       overflow: hidden;
       background-color: #47334f;
-      background-image: conic-gradient(from -22.5deg, #a03660 0deg 45deg, #474059 45deg 90deg, #1f665f 90deg 135deg, #3c415b 135deg 180deg, #84521c 180deg 225deg, #474059 225deg 270deg, #3c415b 270deg 315deg, #514154 315deg 360deg);
+      background-image: conic-gradient(from -36deg, #a03660 0deg 72deg, #474059 72deg 115.2deg, #1f665f 115.2deg 151.2deg, #3c415b 151.2deg 194.4deg, #84521c 194.4deg 230.4deg, #474059 230.4deg 273.6deg, #3c415b 273.6deg 316.8deg, #514154 316.8deg 360deg);
       transition: transform var(--duracion-giro) cubic-bezier(.15,.65,.14,1);
       border: 1px solid #ffebaa;
     }
@@ -133,8 +133,8 @@
     .etiqueta {
       position: absolute;
       color: #fff9ed;
-      width: 24%;
-      font-size: clamp(.75rem, 3.3vw, 1.05rem);
+      width: 22%;
+      font-size: clamp(.62rem, 2.65vw, .88rem);
       font-weight: 800;
       line-height: 1.09;
       transform: translate(-50%, -50%) rotate(var(--contragiro, 0deg));
@@ -205,14 +205,14 @@
     @media (prefers-reduced-motion: reduce) {
       .rueda { transition: none; }
     }
-      .uno { top: 17%; left: 50%; }
-    .dos { top: 26.7%; left: 73.3%; }
-    .tres { top: 50%; left: 83%; }
-    .cuatro { top: 73.3%; left: 73.3%; }
-    .cinco { top: 83%; left: 50%; }
-    .seis { top: 73.3%; left: 26.7%; }
-    .siete { top: 50%; left: 17%; }
-    .ocho { top: 26.7%; left: 26.7%; }
+    .uno { top: 13%; left: 50%; }
+    .dos { top: 30.2%; left: 81.4%; }
+    .tres { top: 47.5%; left: 86.9%; }
+    .cuatro { top: 78.9%; left: 79.1%; }
+    .cinco { top: 86.9%; left: 52.3%; }
+    .seis { top: 72.5%; left: 19.9%; }
+    .siete { top: 56%; left: 17.2%; }
+    .ocho { top: 29.8%; left: 18.7%; }
     #ventana {
       width: min(88vw, 410px);
       margin: auto;
@@ -284,7 +284,7 @@
     <div class="marco" role="img" aria-label="Ruleta con ocho casillas: cinco sin premio, una galletita, un paquete de Oreo clásicas y un mini trozo de tarta">
       <span class="marcador" aria-hidden="true"></span>
       <div class="rueda" id="rueda" aria-hidden="true">
-        <span class="etiqueta uno">1<br>galletita</span>
+        <span class="etiqueta uno">🍪<br>1 galletita</span>
         <span class="etiqueta dos">Sin<br>premio</span>
         <span class="etiqueta tres">Oreo<br>clásicas</span>
         <span class="etiqueta cuatro">Sin<br>premio</span>
@@ -334,6 +334,7 @@
     const clavePublica = "sb_publishable_TuwjOiBnavNXWkxzGye_Jw_20vuNP8E";
     const claveGiroPendiente = "mystery-sweet-giro-pendiente";
     const duracionGiro = 7000;
+    const angulosCentroCasillas = [0, 57.6, 97.2, 136.8, 176.4, 216, 259.2, 302.4];
     const paleta = ['#ffcc74', '#ff83aa', '#76e5bf', '#d49cff', '#fff0be'];
     const elemento = id => document.getElementById(id);
     const girar = elemento('girar');
@@ -465,7 +466,7 @@
       }
       const { casilla: indice, agotado } = resultado;
       const premio = premios[indice];
-      angulo = 360 * (Math.ceil(angulo / 360) + 9) - indice * (360 / premios.length);
+      angulo = 360 * (Math.ceil(angulo / 360) + 9) - angulosCentroCasillas[indice];
       rueda.style.setProperty('--duracion-giro', duracionGiro + 'ms');
       rueda.style.setProperty('--contragiro', -angulo + 'deg');
       rueda.style.transform = 'rotate(' + angulo + 'deg)';
