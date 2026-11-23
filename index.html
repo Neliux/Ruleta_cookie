@@ -71,6 +71,21 @@
     }
     .marca { display: flex; align-items: center; justify-content: center; gap: .55rem; color: #ffe0a2; font: bold clamp(1rem, 4.5vw, 1.45rem) Georgia, serif; }
     .marca img { display: block; width: 52px; height: 52px; }
+    #instruccion {
+      color: #fff2c9;
+      padding: .32em .55em;
+      border: 1px solid #ffd58470;
+      border-radius: 16px;
+      background: #382235df;
+      box-shadow: 0 0 14px #ffbf5340;
+      text-shadow: 0 0 8px #ffbc5152, 0 2px 5px #231522;
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      #instruccion { animation: brillo-aviso 3.5s ease-in-out infinite alternate; }
+      @keyframes brillo-aviso {
+        to { box-shadow: 0 0 22px #ffc46669; border-color: #ffd584bc; }
+      }
+    }
     .indicacion p { margin: .4rem 0 0; color: #ffe0a2; font-weight: 700; }
     .marco {
       position: relative;

@@ -9,7 +9,7 @@
   pointer-events: none;
   inset: 0;
   background: linear-gradient(180deg,#201418 7%,#201418a8 48%,transparent 81%),
-    url('gato-control.webp') center bottom / auto min(calc(100% - 42px), 143vw) no-repeat;
+    url('gato-control.webp') center calc(100% + 12px) / auto min(calc(100% - 48px), 140vw) no-repeat;
 }
 .fondo-juego .ayuda,.fondo-juego #estado {
   text-shadow: 0 1px 5px #150b10,0 0 10px #150b10;

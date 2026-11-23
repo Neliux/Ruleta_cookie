@@ -54,6 +54,76 @@ function mostrar(resultado) {
   }));
 }
 
+function botonPedido(texto, accion, id, nombre) {
+  const boton = document.createElement('button');
+  boton.type = 'button';
+  boton.textContent = texto;
+  boton.dataset.accion = accion;
+  boton.setAttribute('aria-label', texto + ' · ' + nombre);
+  boton.addEventListener('click', () => modificarPedido(id, accion, nombre));
+  return boton;
+}
+
+async function cargarPedidos() {
+  const pedidos = await consultarFeria('msc_pedidos', { p_clave: clave });
+  const lista = elemento('pedidos');
+  lista.replaceChildren(...pedidos.map(pedido => {
+    const tarjeta = document.createElement('article');
+    tarjeta.className = 'pedido';
+    tarjeta.id = 'pedido-' + pedido.id;
+    const nombre = pedido.nombre + ' ' + pedido.apellido;
+    const titulo = document.createElement('h3');
+    titulo.textContent = nombre;
+    const etiqueta = document.createElement('span');
+    etiqueta.className = pedido.hecho ? 'estado-pedido hecho' : 'estado-pedido';
+    etiqueta.textContent = pedido.hecho ? 'Hecho' : 'Pendiente';
+    const datos = document.createElement('p');
+    datos.textContent = [pedido.edad + ' años', pedido.curso, pedido.telefono].filter(Boolean).join(' · ');
+    const items = document.createElement('p');
+    items.textContent = pedido.cantidades.flatMap((n, i) => n ? [n + ' × ' + productosFeria[i]] : []).join(' · ');
+    const controles = document.createElement('div');
+    controles.className = 'acciones-pedido';
+    controles.append(
+      pedido.hecho ? botonPedido('Volver a pendiente', 'pendiente', pedido.id, nombre)
+        : botonPedido('Marcar como hecho', 'hecho', pedido.id, nombre),
+      botonPedido('Eliminar', 'eliminar', pedido.id, nombre)
+    );
+    tarjeta.append(titulo, etiqueta, datos, items, controles);
+    return tarjeta;
+  }));
+  if (!pedidos.length) lista.textContent = 'Todavía no hay pedidos.';
+}
+
+async function modificarPedido(id, accion, nombre) {
+  if (ocupado || !clave) return;
+  if (accion === 'eliminar' && !window.confirm('¿Eliminar el pedido de ' + nombre + '?')) return;
+  ocupado = true;
+  const botones = [...document.querySelectorAll('button:not(:disabled)')];
+  botones.forEach(boton => { boton.disabled = true; });
+  estado.textContent = 'Guardando pedido…';
+  let guardado = false;
+  let actualizado = false;
+  try {
+    await consultarFeria('msc_gestionar_pedido', { p_clave: clave, p_id: id, p_accion: accion });
+    guardado = true;
+    await cargarPedidos();
+    actualizado = true;
+    estado.textContent = {
+      hecho: 'Pedido marcado como hecho.',
+      pendiente: 'Pedido marcado como pendiente.',
+      eliminar: 'Pedido eliminado de la lista.'
+    }[accion];
+  } catch {
+    estado.textContent = guardado
+      ? 'Cambio guardado. Tocá Actualizar para volver a cargar los pedidos.'
+      : 'No se pudo confirmar el cambio. Tocá Actualizar y revisá el pedido.';
+  } finally {
+    botones.forEach(boton => { boton.disabled = false; });
+    ocupado = false;
+    if (actualizado) (elemento('pedido-' + id)?.querySelector('button') ?? elemento('actualizar')).focus();
+  }
+}
+
 async function aplicar(accion, datos, confirmacion) {
   if (ocupado) return;
   ocupado = true;
@@ -64,18 +134,11 @@ async function aplicar(accion, datos, confirmacion) {
     const resultado = await solicitar(accion, datos);
     mostrar(resultado);
     if (accion === 'leer') {
-      const lista = elemento('pedidos');
       try {
-        const pedidos = await consultarFeria('msc_pedidos',{p_clave:clave});
-        lista.replaceChildren();
-        if (!pedidos.length) lista.textContent='Todavía no hay pedidos.';
-        pedidos.forEach(p => {
-          const fila=document.createElement('p');
-          const items=p.cantidades.flatMap((n,i)=>n ? [n+' × '+productosFeria[i]] : []);
-          fila.textContent=[p.nombre+' '+p.apellido,p.edad+' años',p.curso,p.telefono,...items].filter(Boolean).join(' · ');
-          lista.append(fila);
-        });
-      } catch { lista.textContent='No se pudieron cargar los pedidos. Tocá Actualizar.'; }
+        await cargarPedidos();
+      } catch {
+        elemento('pedidos').textContent = 'No se pudieron cargar los pedidos. Tocá Actualizar.';
+      }
     }
     acceso.hidden = true;
     campoClave.value = '';
