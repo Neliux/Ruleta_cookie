@@ -49,6 +49,6 @@
 @media (prefers-reduced-motion:reduce) {
   .giro-carta,#mesa.receta button { transition:none; }
 }
-#mesa.memoria { grid-template-columns:repeat(var(--columnas),minmax(0,1fr)); }
+#mesa.memoria { grid-template-columns:repeat(4,minmax(0,1fr)); width:var(--ancho-mesa,100%); margin-inline:auto; }
 #mesa.memoria button { font-size:clamp(1.1rem,5vw,2rem); }
 #mesa[hidden] { display:none; }

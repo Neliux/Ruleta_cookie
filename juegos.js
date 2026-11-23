@@ -4,9 +4,9 @@ const estadoJuego = $('estado');
 const dulces = ['🍪','🍰','🧁','🍩','🍫','🥧','🍮','🍦'];
 const nombres = ['Galletita','Tarta','Magdalena','Dona','Chocolate','Pastel','Flan','Helado'];
 const rondasPares = [
-  { pares: 4, columnas: 3, fallos: 6 },
-  { pares: 6, columnas: 4, fallos: 9 },
-  { pares: 8, columnas: 5, fallos: 12 }
+  { pares: 4, ancho: 100, fallos: 6 },
+  { pares: 6, ancho: 93, fallos: 9 },
+  { pares: 8, ancho: 86, fallos: 12 }
 ];
 const maxNotas = 18;
 let nivel, fallos, contexto;
@@ -168,7 +168,7 @@ function abrirRonda(tipo) {
   if(tipo==='memoria'){
     const ronda = rondasPares[nivel];
     cartas = Array.from({ length: ronda.pares * 2 }, (_, i) => i % ronda.pares);
-    mesa.style.setProperty('--columnas', ronda.columnas);
+    mesa.style.setProperty('--ancho-mesa', ronda.ancho + '%');
     for(let i=cartas.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cartas[i],cartas[j]]=[cartas[j],cartas[i]];}
     marcadorPares();
   }
