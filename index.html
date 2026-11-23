@@ -281,10 +281,10 @@
       <h1 id="instruccion" tabindex="-1">Girá la ruleta con un empleado del puesto cerca</h1>
       <p>Todos pueden girar.</p>
     </div>
-    <div class="marco" role="img" aria-label="Ruleta con ocho casillas: cinco sin premio, un paquete de Mini Oreo, un paquete de Oreo clásicas y un mini trozo de tarta">
+    <div class="marco" role="img" aria-label="Ruleta con ocho casillas: cinco sin premio, una galletita, un paquete de Oreo clásicas y un mini trozo de tarta">
       <span class="marcador" aria-hidden="true"></span>
       <div class="rueda" id="rueda" aria-hidden="true">
-        <span class="etiqueta uno">Mini<br>Oreo</span>
+        <span class="etiqueta uno">1<br>galletita</span>
         <span class="etiqueta dos">Sin<br>premio</span>
         <span class="etiqueta tres">Oreo<br>clásicas</span>
         <span class="etiqueta cuatro">Sin<br>premio</span>
@@ -310,10 +310,10 @@
   <audio id="musica" src="musica.mp3" loop preload="auto"></audio>
   <script src="musica.js?v=6"></script>
   <script>
-    const premios = ['un paquete de Mini Oreo', null, 'un paquete de Oreo clásicas', null, 'un mini trozo de tarta', null, null, null];
+    const premios = ['1 galletita', null, 'un paquete de Oreo clásicas', null, 'un mini trozo de tarta', null, null, null];
     const mensajesSinPremio = {
       1: [
-        '¡Uyy, che! Justito entre los dos paquetes de Oreo.',
+        '¡Uyy, che! Justito entre la galletita y el paquete de Oreo.',
         'Nde, ¡el Oreo pasó cerquita y ni saludó!'
       ],
       3: [
@@ -328,7 +328,7 @@
         'La ruleta se fue de paseo lejos de los premios. ¡Te mandó saludos!',
         'Che, la flecha se tomó el colectivo equivocado.'
       ],
-      7: ['Las Mini Oreo se hicieron las distraídas en la casilla de al lado.']
+      7: ['La galletita se hizo la distraída en la casilla de al lado.']
     };
     const urlGiro = "https://eyvzpzwagdccphsktogu.supabase.co/rest/v1/rpc/mystery_sweet_girar_detalle";
     const clavePublica = "sb_publishable_TuwjOiBnavNXWkxzGye_Jw_20vuNP8E";
