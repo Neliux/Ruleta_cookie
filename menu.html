@@ -24,6 +24,8 @@
     h2 { font: bold clamp(1.17rem, 4.8vw, 1.6rem) Georgia, serif; color: #ffe0a2; margin: 0 0 .35rem; }
     p { margin: 0; line-height: 1.45; }
     .precio-porcion { margin-top: .5rem; color: #ffe0a2; font-weight: 800; }
+    .precio-anterior { margin-right: .45rem; color: #cbb8c8; font-weight: 600; text-decoration: line-through; }
+    .precio-oferta { color: #8ff0b2; font-weight: 900; }
     .paquetes { margin: .85rem 0 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; }
     .paquetes div { display: flex; flex-direction: column; overflow: hidden; background: #190e20a8; border: 1px solid #b38c6365; border-radius: 12px; }
     .paquetes dt { display: flex; flex: 1; flex-direction: column; gap: .55rem; font-weight: 650; }
@@ -62,8 +64,8 @@
       </li>
       <li>
         <img class="foto-postre" src="tarta.webp" alt="Tarta de gelatina de frutilla" loading="lazy"><h2>Tarta de gelatina de frutilla</h2>
-        <p>Tarta fresca con gelatina de frutilla y base crocante.</p>
-        <p class="precio-porcion">G. 4.000 por porción</p>
+        <p>Porción grande de tarta fresca con gelatina de frutilla y base crocante.</p>
+        <p class="precio-porcion"><span class="precio-anterior">G. 6.000</span><span class="precio-oferta">¡OFERTA! G. 5.000 por porción</span></p>
       </li>
       <li>
         <h2>Galletitas con chispa de chocolate</h2>
