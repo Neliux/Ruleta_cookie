@@ -6,7 +6,7 @@ async function consultarFeria(funcion, datos) {
   return texto ? JSON.parse(texto) : null;
 }
 const productosFeria = ['Negra maluca','Tarta de gelatina de frutilla','Paquete de 2 galletitas medianas','Paquete de 2 galletitas grandes'];
-const preciosFeria = [5000,3000,4000,5000];
+const preciosFeria = [5000,5000,4000,5000];
 const insignia = document.querySelector('.boton-logo');
 if (insignia) {
   const equipo = document.createElement('dialog');
