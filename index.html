@@ -254,12 +254,12 @@
     }
   </style>
   <link rel="stylesheet" href="ajustes.css">
-</head>
+<link rel="stylesheet" href="feria.css"></head>
 <body>
   <div class="fondo-ruleta" aria-hidden="true"></div>
   <main>
     <div class="marca">
-      <img src="logo-msc-v2.webp" width="52" height="52" alt="">
+      <button class="boton-logo" aria-label="Ver nuestro equipo"><img src="logo-msc-v2.webp" width="52" height="52" alt=""></button>
       <span>Mystery Sweet Casino</span>
     </div>
     <div class="indicacion">
@@ -292,8 +292,8 @@
     </div>
   </dialog>
   <button id="ajustes" type="button" aria-label="Ajustes" aria-haspopup="dialog">⚙️</button>
-  <audio id="musica" src="musica.mp3" loop preload="none"></audio>
-  <script src="musica.js?v=4"></script>
+  <audio id="musica" src="musica.mp3" loop preload="auto"></audio>
+  <script src="musica.js?v=5"></script>
   <script>
     const premios = ['un paquete de Mini Oreo', null, 'un paquete de Oreo clásicas', null, 'un mini trozo de tarta', null, null, null];
     const mensajesSinPremio = {
@@ -491,5 +491,5 @@
       }
     });
   </script>
-</body>
+<script src="feria.js"></script></body>
 </html>

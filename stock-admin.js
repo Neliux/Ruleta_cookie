@@ -63,6 +63,20 @@ async function aplicar(accion, datos, confirmacion) {
   try {
     const resultado = await solicitar(accion, datos);
     mostrar(resultado);
+    if (accion === 'leer') {
+      const lista = elemento('pedidos');
+      try {
+        const pedidos = await consultarFeria('msc_pedidos',{p_clave:clave});
+        lista.replaceChildren();
+        if (!pedidos.length) lista.textContent='Todavía no hay pedidos.';
+        pedidos.forEach(p => {
+          const fila=document.createElement('p');
+          const items=p.cantidades.flatMap((n,i)=>n ? [n+' × '+productosFeria[i]] : []);
+          fila.textContent=[p.nombre+' '+p.apellido,p.edad+' años',p.curso,p.telefono,...items].filter(Boolean).join(' · ');
+          lista.append(fila);
+        });
+      } catch { lista.textContent='No se pudieron cargar los pedidos. Tocá Actualizar.'; }
+    }
     acceso.hidden = true;
     campoClave.value = '';
     panel.hidden = acciones.hidden = false;
@@ -84,6 +98,7 @@ acceso.addEventListener('submit', evento => {
 elemento('cambiar').addEventListener('click', () => aplicar('modo', { p_activo: !activo }, 'Modo guardado.'));
 elemento('actualizar').addEventListener('click', () => aplicar('leer', {}, 'Stock actualizado.'));
 elemento('salir').addEventListener('click', () => {
+  elemento('pedidos').replaceChildren();
   clave = '';
   panel.hidden = acciones.hidden = true;
   elemento('stock').replaceChildren();

@@ -42,26 +42,26 @@
     .gato::after { content: ''; position: absolute; inset: 0; background: linear-gradient(#190e20, transparent 31%); pointer-events: none; }
   </style>
   <link rel="stylesheet" href="ajustes.css">
-</head>
+<link rel="stylesheet" href="feria.css"></head>
 <body>
   <main>
     <nav aria-label="Menú">
       <a href="index.html">Volver a la ruleta</a>
       <div class="controles">
         <button id="ajustes" type="button" aria-label="Ajustes" aria-haspopup="dialog">⚙️</button>
-        <img class="logo" src="logo-msc-v2.webp" width="60" height="60" alt="">
+        <button class="boton-logo" aria-label="Ver nuestro equipo"><img class="logo" src="logo-msc-v2.webp" width="60" height="60" alt=""></button>
       </div>
     </nav>
     <p class="marca">Mystery Sweet Casino</p>
-    <h1>Menú</h1>
+    <h1>Menú</h1><button class="pedir" id="hacer-pedido">Hacer pedido</button>
     <ul class="carta">
       <li>
-        <h2>Negra maluca</h2>
+        <img class="foto-postre" src="negra.webp" alt="Negra maluca" loading="lazy"><h2>Negra maluca</h2>
         <p>Torta húmeda de chocolate con cobertura de chocolate.</p>
         <p class="precio-porcion">G. 5.000 por porción</p>
       </li>
       <li>
-        <h2>Tarta de gelatina de uva</h2>
+        <img class="foto-postre" src="tarta.webp" alt="Tarta de gelatina de uva" loading="lazy"><h2>Tarta de gelatina de uva</h2>
         <p>Tarta fresca con gelatina de uva y base crocante.</p>
         <p class="precio-porcion">G. 3.000 por porción</p>
       </li>
@@ -83,8 +83,13 @@
     <figure class="gato">
       <img src="gato-menu.webp" width="960" height="640" loading="lazy" decoding="async" alt="Gato chef que mira el menú con las patas delanteras levantadas">
     </figure>
-  </main>
-  <audio id="musica" src="musica.mp3" loop preload="none"></audio>
-  <script src="musica.js?v=4"></script>
-</body>
+  </main><dialog class="encargo" aria-labelledby="titulo-pedido"><form id="form-pedido">
+  <h2 id="titulo-pedido">Hacer pedido</h2><div class="cantidades"></div><p>Total <output>G. 0</output></p>
+  <label>Nombre<input name="p_nombre" maxlength="60" required></label><label>Apellido<input name="p_apellido" maxlength="60" required></label>
+  <label>Edad<input name="p_edad" type="number" min="1" max="120" required></label><label>Curso<input name="p_curso" maxlength="60" required></label>
+  <label>Teléfono (opcional)<input name="p_telefono" type="tel" maxlength="30"></label>
+  <button class="accion-feria" type="submit">Enviar pedido</button><button class="accion-feria" type="button" id="cerrar-pedido">Cerrar</button><p role="status"></p></form></dialog>
+  <audio id="musica" src="musica.mp3" loop preload="auto"></audio>
+  <script src="musica.js?v=5"></script>
+<script src="feria.js"></script></body>
 </html>

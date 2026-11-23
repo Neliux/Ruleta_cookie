@@ -2,7 +2,7 @@ const audioDelPuesto = (() => {
   const pista = document.getElementById('musica');
   const boton = document.getElementById('ajustes');
   const clave = 'mystery-sweet-musica';
-  const estado = { volumen: 1, tiempo: 0, suerte: 50 };
+  const estado = { volumen: .25, tiempo: 0, suerte: 50 };
   const panel = document.createElement('dialog');
   panel.id = 'panel-ajustes';
   panel.setAttribute('aria-labelledby', 'titulo-ajustes');
@@ -12,7 +12,7 @@ const audioDelPuesto = (() => {
     <input id="volumen" type="range" min="0" max="100">
     <label for="suerte">Suerte <span>Fundamental!</span></label>
     <input id="suerte" type="range" min="0" max="100">
-    ${boton.dataset.juego ? '' : '<a href="snake.html">🐱 Jugar al Gato Viborita</a>'}`;
+    <a href="pasatiempos.html">Pasatiempo</a>`;
   document.body.append(panel);
   const volumen = panel.querySelector('#volumen');
   const nivel = panel.querySelector('#nivel-volumen');
@@ -79,5 +79,6 @@ const audioDelPuesto = (() => {
   leerEstado();
   aplicarVolumen();
   suerte.value = estado.suerte;
+  iniciar();
   return { iniciar };
 })();
