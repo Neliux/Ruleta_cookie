@@ -1,0 +1,21 @@
+.panel-resultado {
+  --acento:#f9cb86;
+  background:radial-gradient(ellipse at top,#51362f,#25191e 68%);
+  border:1px solid var(--acento);
+  border-radius:20px;
+  text-align:center;
+  padding:clamp(.85rem,4vw,1.4rem);
+  color:#fff2db;
+  box-shadow:0 10px 30px #160c14b0,inset 0 0 22px #ffffff08;
+}
+.panel-resultado[data-resultado="victoria"] { --acento:#a8db91; background:radial-gradient(ellipse at top,#435438,#231b25 72%); }
+.panel-resultado[data-resultado="derrota"] { --acento:#ec9894; background:radial-gradient(ellipse at top,#62383f,#271924 72%); }
+.panel-resultado h2 { font:800 clamp(1.2rem,5.6vw,2rem) Georgia,serif; margin:.45rem 0; color:var(--acento); }
+.panel-resultado p { margin:.45rem 0 1rem; }
+.panel-resultado button { background:var(--acento); color:#281a21; min-height:44px; border:0; border-radius:10px; padding:.6rem 1rem; font-weight:800; }
+.panel-resultado .simbolo-resultado { display:grid; place-items:center; margin:auto; width:2.2em; height:2.2em; background:#27192390; border:1px solid var(--acento); border-radius:50%; font-size:clamp(1.45rem,6vw,2.4rem); }
+@media (prefers-reduced-motion:no-preference) {
+  .panel-resultado { animation:entrada-resultado .36s cubic-bezier(.2,.75,.3,1.15); }
+  @keyframes entrada-resultado { from { opacity:0; transform:translateY(8px) scale(.94); } to { opacity:1; transform:translateY(0) scale(1); } }
+}
+.panel-resultado #jugar { background:var(--acento); }

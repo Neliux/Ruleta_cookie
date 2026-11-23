@@ -1,8 +1,15 @@
 const $ = id => document.getElementById(id);
 const mesa = $('mesa');
 const estadoJuego = $('estado');
-const dulces = ['🍪','🍰','🧁','🍩','🍫','🥧'];
-const nombres = ['Galletita','Tarta','Magdalena','Dona','Chocolate','Pastel'];
+const dulces = ['🍪','🍰','🧁','🍩','🍫','🥧','🍮','🍦'];
+const nombres = ['Galletita','Tarta','Magdalena','Dona','Chocolate','Pastel','Flan','Helado'];
+const rondasPares = [
+  { pares: 4, columnas: 3, fallos: 6 },
+  { pares: 6, columnas: 4, fallos: 9 },
+  { pares: 8, columnas: 5, fallos: 12 }
+];
+const maxNotas = 18;
+let nivel, fallos, contexto;
 let modo, sesion=0, bloqueado, primera, pares, intentos, receta, posicion;
 function esperar(ms) { return new Promise(resolve=>setTimeout(resolve,ms)); }
 function reaccion(boton, tipo) {
@@ -13,6 +20,46 @@ function reaccion(boton, tipo) {
     { scale: tipo === 'error' ? '.94' : '1.06', filter: 'brightness(1.24)', boxShadow: '0 0 22px '+colores[tipo] },
     { scale: '1', filter: 'brightness(1)' }
   ], { duration: tipo === 'toque' ? 240 : 430 });
+}
+
+function prepararAudio() {
+  const Audio = window.AudioContext || window.webkitAudioContext;
+  if (!Audio) return;
+  contexto ??= new Audio();
+  contexto.resume().catch(() => {});
+}
+function tocarNota(indice) {
+  const pista = $('musica');
+  if (contexto?.state !== 'running' || pista.muted || !pista.volume) return;
+  const nota = contexto.createOscillator();
+  const volumen = contexto.createGain();
+  const ahora = contexto.currentTime;
+  nota.type = 'sine';
+  nota.frequency.value = [392, 494, 587, 698][indice];
+  volumen.gain.setValueAtTime(.001, ahora);
+  volumen.gain.exponentialRampToValueAtTime(.15 * pista.volume + .001, ahora + .035);
+  volumen.gain.exponentialRampToValueAtTime(.001, ahora + .25);
+  nota.connect(volumen).connect(contexto.destination);
+  nota.start(ahora);
+  nota.stop(ahora + .27);
+}
+function marcadorPares() {
+  const ronda = rondasPares[nivel];
+  estadoJuego.textContent = 'Ronda ' + (nivel + 1) + ' de 3 · ' + pares + '/' + ronda.pares +
+    ' pares · ' + (ronda.fallos - fallos) + ' intentos fallidos disponibles.';
+}
+function resultado(tipo, titulo, detalle) {
+  bloqueado = true;
+  mesa.hidden = true;
+  estadoJuego.hidden = $('reiniciar').hidden = true;
+  const pantalla = $('resultado-juego');
+  pantalla.dataset.resultado = tipo;
+  $('simbolo-resultado').textContent = { victoria: '🏆', derrota: '💔', ronda: '✨' }[tipo];
+  $('titulo-resultado').textContent = titulo;
+  $('detalle-resultado').textContent = detalle;
+  $('accion-resultado').textContent = tipo === 'ronda' ? 'Siguiente ronda' : 'Volver a jugar';
+  pantalla.hidden = false;
+  $('accion-resultado').focus();
 }
 
 function mostrarCarta(b,i) {
@@ -36,10 +83,22 @@ async function elegir(b,i,valor) {
       pareja.setAttribute('aria-disabled','true');
       reaccion(pareja,'acierto');
     }
-    estadoJuego.textContent=pares===6 ? '¡Completaste la bandeja en '+intentos+' intentos!' : pares+' de 6 pares encontrados.';
+    marcadorPares();
+    if (pares === rondasPares[nivel].pares) {
+      bloqueado = true;
+      const actual = sesion;
+      await esperar(460);
+      if (actual !== sesion) return;
+      if (nivel === rondasPares.length - 1) {
+        resultado('victoria', '¡Tres bandejas completas!', 'Encontraste los 18 pares en ' + intentos + ' jugadas.');
+      } else {
+        resultado('ronda', '¡Bandeja completa!', 'Encontraste ' + pares + ' pares. La próxima ronda trae más fichas.');
+      }
+    }
   } else {
     bloqueado=true;
-    estadoJuego.textContent='No coinciden. Probá con otro par.';
+    fallos++;
+    marcadorPares();
     const actual=sesion;
     await esperar(340);
     if(actual!==sesion)return;
@@ -47,43 +106,71 @@ async function elegir(b,i,valor) {
     reaccion(previa.b,'error');
     await esperar(520);
     if(actual!==sesion)return;
-    tapar(b,i); tapar(previa.b,previa.i); bloqueado=false;
+    tapar(b,i); tapar(previa.b,previa.i);
+    if (fallos === rondasPares[nivel].fallos) {
+      resultado('derrota', '¡Se acabaron los intentos!', 'Encontraste ' + pares + ' pares en la ronda ' + (nivel + 1) + '.');
+      return;
+    }
+    bloqueado=false;
   }
 }
 async function ronda() {
   const actual=sesion;
   receta.push(Math.floor(Math.random()*4)); posicion=0; bloqueado=true;
-  estadoJuego.textContent='Mirá la receta · Ronda '+receta.length+' de 8';
+  estadoJuego.textContent='Mirá y escuchá · '+receta.length+' de '+maxNotas+' notas';
   await esperar(700);
   for(const i of receta){
     if(actual!==sesion)return;
-    const b=mesa.children[i]; b.classList.add('luz'); estadoJuego.textContent=nombres[i];
-    await esperar(600); if(actual!==sesion)return;
-    b.classList.remove('luz'); estadoJuego.textContent='…'; await esperar(230);
+    const b=mesa.children[i]; b.classList.add('luz'); tocarNota(i); estadoJuego.textContent=nombres[i];
+    await esperar(receta.length > 8 ? 420 : 600); if(actual!==sesion)return;
+    b.classList.remove('luz'); estadoJuego.textContent='…'; await esperar(180);
   }
   if(actual!==sesion)return;
   bloqueado=false; estadoJuego.textContent='Tu turno · Repetí la secuencia.';
 }
-function ingrediente(i) {
+async function ingrediente(i) {
   if(bloqueado)return;
-  if(receta[posicion]!==i){reaccion(mesa.children[i],'error'); bloqueado=true;estadoJuego.textContent='¡Uy! El chef esperaba '+nombres[receta[posicion]]+'. Llegaste a la ronda '+receta.length+'.';return;}
+  tocarNota(i);
+  if (receta[posicion] !== i) {
+    bloqueado = true;
+    reaccion(mesa.children[i], 'error');
+    const actual = sesion;
+    await esperar(400);
+    if (actual !== sesion) return;
+    resultado('derrota', '¡Se cortó la receta!', 'La próxima nota era ' + nombres[receta[posicion]] + '. Llegaste a una secuencia de ' + receta.length + ' notas.');
+    return;
+  }
   reaccion(mesa.children[i],'acierto');
   posicion++;estadoJuego.textContent='¡Bien! '+posicion+' de '+receta.length;
   if(posicion===receta.length){
     bloqueado=true;
-    if(receta.length===8)estadoJuego.textContent='¡Ocho recetas completas! El chef te aplaude.';
+    if (receta.length === maxNotas) resultado('victoria', '¡Oído de chef!', 'Repetiste las 18 notas en el orden correcto.');
     else ronda();
   }
 }
 function iniciarJuego(tipo) {
-  sesion++;modo=tipo; primera=null;pares=intentos=0;receta=[];bloqueado=false;
+  nivel = intentos = 0;
+  receta = [];
+  if (tipo === 'receta') prepararAudio();
+  abrirRonda(tipo);
+}
+function abrirRonda(tipo) {
+  sesion++;
+  modo=tipo;
+  primera=null;
+  pares=fallos=0;
+  bloqueado=false;
+  mesa.hidden = estadoJuego.hidden = $('reiniciar').hidden = false;
+  $('resultado-juego').hidden = true;
   $('seleccion').hidden=true;$('partida').hidden=false;mesa.replaceChildren();mesa.className=tipo;
   $('titulo').textContent=tipo==='memoria'?'Memoria del chef':'La receta del michi';
   let cartas=[0,1,2,3];
   if(tipo==='memoria'){
-    cartas=[0,1,2,3,4,5,0,1,2,3,4,5];
+    const ronda = rondasPares[nivel];
+    cartas = Array.from({ length: ronda.pares * 2 }, (_, i) => i % ronda.pares);
+    mesa.style.setProperty('--columnas', ronda.columnas);
     for(let i=cartas.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[cartas[i],cartas[j]]=[cartas[j],cartas[i]];}
-    estadoJuego.textContent='Encontrá los seis pares de postres.';
+    marcadorPares();
   }
   cartas.forEach((valor,i)=>{
     const b=document.createElement('button');
@@ -110,3 +197,13 @@ function iniciarJuego(tipo) {
 document.querySelectorAll('[data-juego]').forEach(b=>b.onclick=()=>iniciarJuego(b.dataset.juego));
 $('volver').onclick=()=>{sesion++;$('seleccion').hidden=false;$('partida').hidden=true;};
 $('reiniciar').onclick=()=>iniciarJuego(modo);
+$('accion-resultado').onclick = () => {
+  if ($('resultado-juego').dataset.resultado === 'ronda') {
+    nivel++;
+    abrirRonda(modo);
+    mesa.firstElementChild.focus();
+  } else {
+    iniciarJuego(modo);
+    mesa.firstElementChild.focus();
+  }
+};

@@ -173,7 +173,13 @@ function dibujar(ahora, fraccion = 1) {
 
 function terminar(gano, motivo = '') {
   jugando = false;
-  mensaje.textContent = gano ? '¡Ganaste! 🎉' : '¡Uy, michi!';
+  const tarjeta = ficha.querySelector('.ficha');
+  tarjeta.classList.add('panel-resultado');
+  tarjeta.dataset.resultado = gano ? 'victoria' : 'derrota';
+  const simbolo = document.getElementById('simbolo-resultado');
+  simbolo.hidden = false;
+  simbolo.textContent = gano ? '🏆' : '💔';
+  mensaje.textContent = gano ? '¡Campeón de las galletitas!' : '¡Fin de la partida!';
   detalle.textContent = gano ? 'Juntaste las 80 galletitas.' : motivo + ' Juntaste ' + puntos + (puntos === 1 ? ' galletita.' : ' galletitas.');
   jugar.textContent = 'Volver a jugar';
   ficha.hidden = false;

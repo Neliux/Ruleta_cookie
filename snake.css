@@ -27,3 +27,9 @@ progress::-moz-progress-bar { background:#ffc373; }
 .mandos button { touch-action:manipulation; font-size:1.4rem; cursor:pointer; }
 .mandos button:active { background:#ffc373; color:#22171a; }
 .ayuda { text-align:center; margin:.45rem 0 0; color:#ebc4a8; font-size:.87rem; }
+.mandos { grid-template:repeat(2, minmax(44px, 54px)) / repeat(3, minmax(48px, 66px)); justify-content:center; gap:.3rem; }
+.mandos [data-dir="up"] { grid-area:1 / 2; }
+.mandos [data-dir="left"] { grid-area:2 / 1; }
+.mandos [data-dir="down"] { grid-area:2 / 2; }
+.mandos [data-dir="right"] { grid-area:2 / 3; }
+#ficha:has(.panel-resultado) { place-items:center; background:#211317b8; }
